@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Flashcard Pro</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        height: 100vh;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: white;
+      }
+
+      /* CARD */
+      .card {
+        width: 420px;
+        height: 260px;
+        perspective: 1200px;
+      }
+
+      .inner {
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+        position: relative;
+      }
+
+      .flipped {
+        transform: rotateY(180deg);
+      }
+
+      .face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 20px;
+        backdrop-filter: blur(15px);
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        backface-visibility: hidden;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .front {
+        font-size: 26px;
+        font-weight: 600;
+      }
+
+      .back {
+        transform: rotateY(180deg);
+        font-size: 18px;
+      }
+
+      .ipa {
+        opacity: 0.8;
+        margin-bottom: 10px;
+      }
+
+      /* CONTROLS */
+      .controls {
+        margin-top: 25px;
+      }
+
+      button {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 10px;
+        margin: 5px;
+        cursor: pointer;
+        font-weight: 500;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background: rgba(255, 255, 255, 0.4);
+      }
+
+      /* PROGRESS */
+      .progress {
+        margin-bottom: 15px;
+        opacity: 0.9;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>Chủ đề: Công việc</h2>
+    <div class="progress" id="progress"></div>
+
+    <div class="card" onclick="flipCard()">
+      <div class="inner" id="card">
+        <div class="face front" id="front"></div>
+        <div class="face back" id="back"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button onclick="prevCard()">⬅ Prev</button>
+      <button onclick="nextCard()">Next ➡</button>
+      <button onclick="shuffle()">🔀 Shuffle</button>
+    </div>
+
+    <script>
+      const jobs = [
+        { w: "Solicitor", ipa: "/səˈlɪsɪtə/", m: "Người cố vấn pháp luật" },
+        { w: "Prison officer", ipa: "/ˈprɪzn ˈɒfɪsə/", m: "Công an trại giam" },
+        {
+          w: "Security officer",
+          ipa: "/sɪˈkjʊərɪti ˈɒfɪsə/",
+          m: "Nhân viên an ninh",
+        },
+        {
+          w: "Customs officer",
+          ipa: "/ˈkʌstəmz ˈɒfɪsə/",
+          m: "Nhân viên hải quan",
+        },
+        { w: "Policewoman", ipa: "/pəˈliːsˌwʊmən/", m: "Cảnh sát nữ" },
+        { w: "Detective", ipa: "/dɪˈtɛktɪv/", m: "Thám tử" },
+        { w: "Lawyer", ipa: "/ˈlɔːjə/", m: "Luật sư" },
+        { w: "Police officer", ipa: "/pəˈliːs ˈɒfɪsə/", m: "Cảnh sát" },
+        { w: "Bodyguard", ipa: "/ˈbɒdiɡɑːd/", m: "Vệ sĩ" },
+        { w: "Judge", ipa: "/dʒʌdʒ/", m: "Quan tòa" },
+        { w: "Forensic scientist", ipa: "/fəˈrɛnsɪk ˈsaɪəntɪst/", m: "Pháp y" },
+        { w: "Barrister", ipa: "/ˈbærɪstə/", m: "Luật sư bào chữa" },
+        { w: "Magistrate", ipa: "/ˈmædʒɪstreɪt/", m: "Quan tòa sơ thẩm" },
+
+        { w: "Web developer", ipa: "/web dɪˈveləpə/", m: "Lập trình web" },
+        {
+          w: "Database administrator",
+          ipa: "/ˈdeɪtəbeɪs ədˈmɪnɪstreɪtə/",
+          m: "Quản trị CSDL",
+        },
+        { w: "Web designer", ipa: "/web dɪˈzaɪnə/", m: "Thiết kế web" },
+        {
+          w: "Software engineer",
+          ipa: "/ˈsɒftweə ˌendʒɪˈnɪə/",
+          m: "Kỹ sư phần mềm",
+        },
+        { w: "Programmer", ipa: "/ˈprəʊɡræmə/", m: "Lập trình viên" },
+        {
+          w: "Software developer",
+          ipa: "/ˈsɒftweə dɪˈveləpə/",
+          m: "Phát triển phần mềm",
+        },
+
+        { w: "Accountant", ipa: "/əˈkaʊntənt/", m: "Kế toán" },
+        { w: "Economist", ipa: "/ɪˈkɒnəmɪst/", m: "Nhà kinh tế" },
+        {
+          w: "Investment analyst",
+          ipa: "/ɪnˈvestmənt ˈænəlɪst/",
+          m: "Phân tích đầu tư",
+        },
+        { w: "Businessman", ipa: "/ˈbɪznɪsmən/", m: "Doanh nhân" },
+        { w: "Businesswoman", ipa: "/ˈbɪznɪswʊmən/", m: "Nữ doanh nhân" },
+        {
+          w: "Financial adviser",
+          ipa: "/faɪˈnænʃəl ədˈvaɪzə/",
+          m: "Cố vấn tài chính",
+        },
+        {
+          w: "Personal assistant",
+          ipa: "/ˈpɜːsnl əˈsɪstənt/",
+          m: "Trợ lý cá nhân",
+        },
+        { w: "Director", ipa: "/dɪˈrektə/", m: "Giám đốc" },
+        {
+          w: "Sales representative",
+          ipa: "/seɪlz ˌreprɪˈzentətɪv/",
+          m: "Đại diện bán hàng",
+        },
+        { w: "Secretary", ipa: "/ˈsekrətri/", m: "Thư ký" },
+        { w: "Manager", ipa: "/ˈmænɪdʒə/", m: "Quản lý" },
+
+        { w: "Receptionist", ipa: "/rɪˈsepʃənɪst/", m: "Lễ tân" },
+        { w: "Office worker", ipa: "/ˈɒfɪs ˈwɜːkə/", m: "Nhân viên văn phòng" },
+        {
+          w: "Customer service representative",
+          ipa: "/ˈkʌstəmə ˈsɜːvɪs/",
+          m: "CSKH",
+        },
+        {
+          w: "Marketing director",
+          ipa: "/ˈmɑːkɪtɪŋ dɪˈrektə/",
+          m: "Giám đốc marketing",
+        },
+
+        { w: "Doctor", ipa: "/ˈdɒktə/", m: "Bác sĩ" },
+        { w: "Nurse", ipa: "/nɜːs/", m: "Y tá" },
+        { w: "Dentist", ipa: "/ˈdentɪst/", m: "Nha sĩ" },
+        { w: "Pharmacist", ipa: "/ˈfɑːməsɪst/", m: "Dược sĩ" },
+        { w: "Surgeon", ipa: "/ˈsɜːdʒən/", m: "Bác sĩ phẫu thuật" },
+        { w: "Psychiatrist", ipa: "/saɪˈkaɪətrɪst/", m: "Bác sĩ tâm thần" },
+        {
+          w: "Physiotherapist",
+          ipa: "/ˌfɪziəˈθerəpɪst/",
+          m: "Vật lý trị liệu",
+        },
+
+        { w: "Teacher", ipa: "/ˈtiːtʃə/", m: "Giáo viên" },
+        { w: "Lecturer", ipa: "/ˈlektʃərə/", m: "Giảng viên" },
+        { w: "Translator", ipa: "/trænsˈleɪtə/", m: "Phiên dịch" },
+        {
+          w: "Teaching assistant",
+          ipa: "/ˈtiːtʃɪŋ əˈsɪstənt/",
+          m: "Trợ giảng",
+        },
+
+        { w: "Engineer", ipa: "/ˌendʒɪˈnɪə/", m: "Kỹ sư" },
+        { w: "Electrician", ipa: "/ɪˌlektrɪʃən/", m: "Thợ điện" },
+        { w: "Mechanic", ipa: "/mɪˈkænɪk/", m: "Thợ sửa máy" },
+        { w: "Plumber", ipa: "/ˈplʌmə/", m: "Thợ sửa ống nước" },
+        { w: "Carpenter", ipa: "/ˈkɑːpɪntə/", m: "Thợ mộc" },
+        { w: "Bricklayer", ipa: "/ˈbrɪkleɪə/", m: "Thợ xây" },
+        { w: "Architect", ipa: "/ˈɑːkɪtekt/", m: "Kiến trúc sư" },
+
+        { w: "Chef", ipa: "/ʃef/", m: "Đầu bếp" },
+        { w: "Cook", ipa: "/kʊk/", m: "Nấu ăn" },
+        { w: "Waiter", ipa: "/ˈweɪtə/", m: "Phục vụ nam" },
+        { w: "Waitress", ipa: "/ˈweɪtrəs/", m: "Phục vụ nữ" },
+        { w: "Bartender", ipa: "/ˈbɑːtendə/", m: "Pha chế rượu" },
+        { w: "Barista", ipa: "/bəˈriːstə/", m: "Pha cà phê" },
+
+        { w: "Actor", ipa: "/ˈæktə/", m: "Diễn viên" },
+        { w: "Actress", ipa: "/ˈæktrəs/", m: "Diễn viên nữ" },
+        { w: "Singer", ipa: "/ˈsɪŋə/", m: "Ca sĩ" },
+        { w: "Musician", ipa: "/mjuˈzɪʃən/", m: "Nhạc sĩ" },
+        { w: "Photographer", ipa: "/fəˈtɒɡrəfə/", m: "Nhiếp ảnh" },
+        { w: "Designer", ipa: "/dɪˈzaɪnə/", m: "Thiết kế" },
+
+        { w: "Pilot", ipa: "/ˈpaɪlət/", m: "Phi công" },
+        { w: "Driver", ipa: "/ˈdraɪvə/", m: "Tài xế" },
+        {
+          w: "Flight attendant",
+          ipa: "/flaɪt əˈtendənt/",
+          m: "Tiếp viên hàng không",
+        },
+
+        { w: "Scientist", ipa: "/ˈsaɪəntɪst/", m: "Nhà khoa học" },
+        { w: "Biologist", ipa: "/baɪˈɒlədʒɪst/", m: "Sinh học" },
+        { w: "Physicist", ipa: "/ˈfɪzɪsɪst/", m: "Vật lý" },
+        { w: "Astronomer", ipa: "/əˈstrɒnəmə/", m: "Thiên văn" },
+        { w: "Researcher", ipa: "/rɪˈsɜːtʃə/", m: "Nhà nghiên cứu" },
+
+        { w: "Cleaner", ipa: "/ˈkliːnə/", m: "Dọn vệ sinh" },
+        { w: "Factory worker", ipa: "/ˈfæktəri ˈwɜːkə/", m: "Công nhân" },
+        { w: "Gardener", ipa: "/ˈɡɑːdnə/", m: "Làm vườn" },
+
+        { w: "Cashier", ipa: "/kæˈʃɪə/", m: "Thu ngân" },
+        { w: "Shop assistant", ipa: "/ʃɒp əˈsɪstənt/", m: "Bán hàng" },
+        { w: "Store manager", ipa: "/stɔː ˈmænɪdʒə/", m: "Quản lý cửa hàng" },
+
+        { w: "Politician", ipa: "/ˌpɒlɪˈtɪʃən/", m: "Chính trị gia" },
+        { w: "Housewife", ipa: "/ˈhaʊswaɪf/", m: "Nội trợ" },
+
+        { w: "Burglar", ipa: "/ˈbɜːɡlə/", m: "Kẻ trộm" },
+        { w: "Thief", ipa: "/θiːf/", m: "Kẻ cắp" },
+        { w: "Smuggler", ipa: "/ˈsmʌɡlə/", m: "Buôn lậu" },
+        { w: "Pickpocket", ipa: "/ˈpɪkpɒkɪt/", m: "Móc túi" },
+      ];
+
+      let current = 0;
+
+      function render() {
+        document.getElementById("front").innerText = jobs[current].w;
+        document.getElementById("back").innerHTML =
+          `<div class="ipa">${jobs[current].ipa}</div>${jobs[current].m}`;
+        document.getElementById("progress").innerText =
+          `${current + 1} / ${jobs.length}`;
+      }
+
+      function flipCard() {
+        document.getElementById("card").classList.toggle("flipped");
+      }
+
+      function nextCard() {
+        current = (current + 1) % jobs.length;
+        reset();
+      }
+
+      function prevCard() {
+        current = (current - 1 + jobs.length) % jobs.length;
+        reset();
+      }
+
+      function shuffle() {
+        jobs.sort(() => Math.random() - 0.5);
+        current = 0;
+        reset();
+      }
+
+      function reset() {
+        document.getElementById("card").classList.remove("flipped");
+        render();
+      }
+
+      render();
+    </script>
+  </body>
+</html>

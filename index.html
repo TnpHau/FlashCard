@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FlashCard Pro</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="utils.js"></script>
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        min-height: 100vh;
+        padding: 48px 24px 64px;
+      }
+
+      /* ── Header ── */
+      header {
+        text-align: center;
+        margin-bottom: 52px;
+      }
+      .logo-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: #475569;
+        margin-bottom: 12px;
+      }
+      header h1 {
+        font-size: 40px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 10px;
+      }
+      header p {
+        color: #64748b;
+        font-size: 15px;
+      }
+
+      /* ── Action bar ── */
+      .action-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1120px;
+        margin: 0 auto 28px;
+      }
+      .section-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .btn-new {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 22px;
+        background: linear-gradient(135deg, #818cf8, #c084fc);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-family: "Poppins", sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 4px 20px rgba(129, 140, 248, 0.35);
+      }
+      .btn-new:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(129, 140, 248, 0.5);
+      }
+
+      /* ── Grid ── */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 22px;
+        max-width: 1120px;
+        margin: 0 auto;
+      }
+
+      /* ── Topic card ── */
+      .topic-card {
+        border-radius: 22px;
+        padding: 26px 24px 22px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition:
+          transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+          box-shadow 0.3s;
+        min-height: 176px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .topic-card::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -20px;
+        width: 160px;
+        height: 160px;
+        background: rgba(255, 255, 255, 0.07);
+        border-radius: 50%;
+      }
+      .topic-card::after {
+        content: "";
+        position: absolute;
+        bottom: -30px;
+        left: -15px;
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+      }
+      .topic-card:hover {
+        transform: translateY(-7px) scale(1.01);
+        box-shadow: 0 24px 56px rgba(0, 0, 0, 0.45);
+      }
+
+      .card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: relative;
+        z-index: 1;
+      }
+      .topic-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.18);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        font-weight: 700;
+        backdrop-filter: blur(8px);
+      }
+      /* action buttons on card top-right */
+      .card-actions {
+        display: flex;
+        gap: 6px;
+        z-index: 1;
+      }
+      .card-btn {
+        width: 34px;
+        height: 34px;
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        transition:
+          background 0.2s,
+          transform 0.15s;
+        text-decoration: none;
+        backdrop-filter: blur(8px);
+        flex-shrink: 0;
+      }
+      .card-btn:hover {
+        background: rgba(255, 255, 255, 0.32);
+        transform: scale(1.1);
+      }
+
+      .card-bottom {
+        position: relative;
+        z-index: 1;
+      }
+      .topic-name {
+        font-size: 19px;
+        font-weight: 700;
+        margin-bottom: 5px;
+        line-height: 1.25;
+      }
+      .topic-meta {
+        font-size: 12px;
+        opacity: 0.7;
+      }
+
+      /* ── Empty state ── */
+      .empty {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 80px 24px;
+        color: #334155;
+      }
+      .empty-icon {
+        font-size: 56px;
+        margin-bottom: 18px;
+      }
+      .empty h3 {
+        font-size: 18px;
+        color: #475569;
+        margin-bottom: 8px;
+      }
+      .empty p {
+        font-size: 14px;
+      }
+
+      /* ── Toast ── */
+      .toast {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        background: #1e293b;
+        color: #e2e8f0;
+        padding: 14px 20px;
+        border-radius: 14px;
+        font-size: 14px;
+        font-weight: 500;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        border-left: 4px solid #818cf8;
+        transform: translateY(80px);
+        opacity: 0;
+        transition:
+          transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+          opacity 0.35s;
+        max-width: 320px;
+        z-index: 200;
+      }
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      /* ═══════════════════════════════════
+       COLOR PICKER MODAL
+    ═══════════════════════════════════ */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(6px);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s;
+      }
+      .modal-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .modal {
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 20px;
+        padding: 28px;
+        width: 100%;
+        max-width: 460px;
+        transform: translateY(20px) scale(0.97);
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+      }
+      .modal-overlay.open .modal {
+        transform: translateY(0) scale(1);
+      }
+
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+      .modal-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #e2e8f0;
+      }
+      .modal-close {
+        width: 32px;
+        height: 32px;
+        background: #334155;
+        border: none;
+        border-radius: 8px;
+        color: #94a3b8;
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      .modal-close:hover {
+        background: #475569;
+        color: #e2e8f0;
+      }
+
+      .modal-topic-name {
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 20px;
+      }
+
+      /* Preview strip */
+      .modal-preview {
+        height: 52px;
+        border-radius: 12px;
+        margin-bottom: 18px;
+        transition: background 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 600;
+        color: white;
+        letter-spacing: 1px;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Palette grid inside modal */
+      .modal-palette-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+      .pal-swatch {
+        height: 44px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: 2.5px solid transparent;
+        position: relative;
+        transition:
+          transform 0.15s,
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .pal-swatch:hover {
+        transform: scale(1.1);
+      }
+      .pal-swatch.active {
+        border-color: white;
+        box-shadow:
+          0 0 0 2px rgba(129, 140, 248, 0.8),
+          0 4px 12px rgba(0, 0, 0, 0.4);
+        transform: scale(1.12);
+      }
+      .pal-swatch .tip {
+        display: none;
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #0f172a;
+        color: #e2e8f0;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 3px 7px;
+        border-radius: 6px;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 10;
+      }
+      .pal-swatch:hover .tip {
+        display: block;
+      }
+
+      .modal-footer {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+      .btn-cancel {
+        padding: 10px 20px;
+        background: #334155;
+        border: none;
+        border-radius: 10px;
+        color: #94a3b8;
+        font-family: "Poppins", sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .btn-cancel:hover {
+        background: #475569;
+        color: #e2e8f0;
+      }
+      .btn-apply {
+        padding: 10px 24px;
+        background: linear-gradient(135deg, #818cf8, #c084fc);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-family: "Poppins", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 4px 16px rgba(129, 140, 248, 0.35);
+      }
+      .btn-apply:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(129, 140, 248, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo-label">✦ Flash Card</div>
+      <h1>Chọn Chủ Đề</h1>
+      <p>Nhấn vào chủ đề để bắt đầu học từ vựng</p>
+    </header>
+
+    <div class="action-bar">
+      <span class="section-label" id="count-label">Đang tải…</span>
+      <a href="create.html" class="btn-new">+ Tạo chủ đề mới</a>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <!-- ── Color picker modal ── -->
+    <div
+      class="modal-overlay"
+      id="modal-overlay"
+      onclick="handleOverlayClick(event)"
+    >
+      <div class="modal">
+        <div class="modal-header">
+          <span class="modal-title">🎨 Đổi màu</span>
+          <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-topic-name" id="modal-topic-name"></div>
+        <div class="modal-preview" id="modal-preview"></div>
+        <div class="modal-palette-grid" id="modal-palette-grid"></div>
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal()">Huỷ</button>
+          <button class="btn-apply" onclick="applyColor()">✓ Áp dụng</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      let topics = seedIfEmpty();
+      renderGrid(topics);
+
+      // ── Render grid ──
+      function renderGrid(list) {
+        const grid = document.getElementById("grid");
+        document.getElementById("count-label").textContent =
+          list.length === 0 ? "Chưa có chủ đề" : `${list.length} chủ đề`;
+
+        if (list.length === 0) {
+          grid.innerHTML = `
+          <div class="empty">
+            <div class="empty-icon">📚</div>
+            <h3>Chưa có chủ đề nào</h3>
+            <p>Nhấn "+ Tạo chủ đề mới" để bắt đầu!</p>
+          </div>`;
+          return;
+        }
+
+        grid.innerHTML = list
+          .map(
+            (t) => `
+        <div class="topic-card"
+          id="card-${t.id}"
+          style="background: ${getGradient(t.palette)}"
+          onclick="study('${t.id}')">
+          <div class="card-top">
+            <div class="topic-icon">${escHtml(t.name.charAt(0).toUpperCase())}</div>
+            <div class="card-actions">
+              <button class="card-btn" title="Đổi màu"
+                onclick="event.stopPropagation(); openColorModal('${t.id}')">🎨</button>
+              <a class="card-btn"
+                href="create.html?id=${t.id}"
+                onclick="event.stopPropagation()"
+                title="Chỉnh sửa nội dung">✏️</a>
+            </div>
+          </div>
+          <div class="card-bottom">
+            <div class="topic-name">${escHtml(t.name)}</div>
+            <div class="topic-meta">${t.cards.length} thẻ &nbsp;·&nbsp; ${escHtml(t.palette.name)}</div>
+          </div>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      function study(id) {
+        window.location.href = `flashcard.html?id=${id}`;
+      }
+
+      // ── Color modal state ──
+      let modalTopicId = null;
+      let selectedPalette = null;
+
+      function openColorModal(topicId) {
+        const topic = topics.find((t) => t.id === topicId);
+        if (!topic) return;
+
+        modalTopicId = topicId;
+        selectedPalette = topic.palette;
+
+        document.getElementById("modal-topic-name").textContent = topic.name;
+        buildModalGrid();
+        updateModalPreview();
+        document.getElementById("modal-overlay").classList.add("open");
+      }
+
+      function closeModal() {
+        document.getElementById("modal-overlay").classList.remove("open");
+      }
+
+      function handleOverlayClick(e) {
+        if (e.target === document.getElementById("modal-overlay")) closeModal();
+      }
+
+      function buildModalGrid() {
+        document.getElementById("modal-palette-grid").innerHTML =
+          COLOR_PALETTES.map(
+            (p, i) => `
+          <div class="pal-swatch ${p.name === selectedPalette.name ? "active" : ""}"
+            style="background: ${getGradient(p)}"
+            onclick="pickPalette(${i})">
+            <span class="tip">${p.name}</span>
+          </div>
+        `,
+          ).join("");
+      }
+
+      function pickPalette(i) {
+        selectedPalette = COLOR_PALETTES[i];
+        buildModalGrid();
+        updateModalPreview();
+      }
+
+      function updateModalPreview() {
+        const el = document.getElementById("modal-preview");
+        el.style.background = getGradient(selectedPalette);
+        el.textContent = selectedPalette.name;
+      }
+
+      function applyColor() {
+        if (!modalTopicId || !selectedPalette) return;
+
+        topics = getTopics();
+        const idx = topics.findIndex((t) => t.id === modalTopicId);
+        if (idx === -1) return;
+
+        topics[idx].palette = selectedPalette;
+        topics[idx].updatedAt = Date.now();
+        saveTopics(topics);
+
+        // Update card in place (no full re-render needed)
+        const card = document.getElementById(`card-${modalTopicId}`);
+        if (card) {
+          card.style.background = getGradient(selectedPalette);
+          card.querySelector(".topic-meta").textContent =
+            `${topics[idx].cards.length} thẻ · ${selectedPalette.name}`;
+        }
+
+        closeModal();
+        showToast(
+          `🎨 Đã đổi màu "${topics[idx].name}" → ${selectedPalette.name}`,
+        );
+      }
+
+      // ── Toast ──
+      function showToast(msg) {
+        const el = document.getElementById("toast");
+        el.textContent = msg;
+        el.classList.add("show");
+        setTimeout(() => el.classList.remove("show"), 3000);
+      }
+
+      // Toast after save/delete redirect from create.html
+      const msg = sessionStorage.getItem("fc_msg");
+      if (msg) {
+        sessionStorage.removeItem("fc_msg");
+        showToast(msg);
+      }
+    </script>
+  </body>
+</html>
