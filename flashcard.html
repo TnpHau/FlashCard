@@ -430,24 +430,56 @@
 <script>
   const params  = new URLSearchParams(window.location.search);
   const topicId = params.get('id');
-  let   topic   = topicId ? getTopicById(topicId) : null;
+  let topic = null;
+  let selectedPalette = COLOR_PALETTES[0];
 
-  if (!topic) {
-    document.documentElement.style.setProperty('--c1', '#2c3e50');
-    document.documentElement.style.setProperty('--c2', '#4568DC');
-    document.documentElement.style.setProperty('--c3', '#B06AB3');
-    document.getElementById('root').innerHTML = `
-      <div class="not-found">
-        <div style="font-size:56px">🔍</div>
-        <h2>Không tìm thấy chủ đề</h2>
-        <a href="index.html">← Về trang chủ</a>
-      </div>`;
-  } else {
+  function applyPalette(p) {
+    document.documentElement.style.setProperty('--c1', p.c1);
+    document.documentElement.style.setProperty('--c2', p.c2);
+    document.documentElement.style.setProperty('--c3', p.c3 || p.c2);
+  }
+
+  // deck & current ở global để flip/next/prev/shuffleDeck dùng được từ onclick
+  let deck    = [];
+  let current = 0;
+
+  function render() {
+    const c = deck[current];
+    document.getElementById('front-word').textContent = c.w;
+    const ipaEl = document.getElementById('back-ipa');
+    ipaEl.textContent   = c.ipa || '';
+    ipaEl.style.display = c.ipa ? '' : 'none';
+    document.getElementById('back-meaning').textContent = c.m;
+    document.getElementById('prog-text').textContent    = `${current + 1} / ${deck.length}`;
+    document.getElementById('prog-bar').style.width     = ((current + 1) / deck.length * 100).toFixed(1) + '%';
+  }
+
+  function flip()        { document.getElementById('inner').classList.toggle('flipped'); }
+  function unflip()      { document.getElementById('inner').classList.remove('flipped'); }
+  function next()        { current = (current + 1) % deck.length; unflip(); render(); }
+  function prev()        { current = (current - 1 + deck.length) % deck.length; unflip(); render(); }
+  function shuffleDeck() { deck.sort(() => Math.random() - 0.5); current = 0; unflip(); render(); }
+
+  (async () => {
+    topic = topicId ? await getTopicById(topicId) : null;
+
+    if (!topic) {
+      applyPalette({ c1: '#2c3e50', c2: '#4568DC', c3: '#B06AB3' });
+      document.getElementById('root').innerHTML = `
+        <div class="not-found">
+          <div style="font-size:56px">🔍</div>
+          <h2>Không tìm thấy chủ đề</h2>
+          <a href="index.html">← Về trang chủ</a>
+        </div>`;
+      return;
+    }
+
+    selectedPalette = topic.palette;
     applyPalette(topic.palette);
     document.title = `${topic.name} – FlashCard Pro`;
 
-    let deck    = [...topic.cards];
-    let current = 0;
+    deck    = [...topic.cards];
+    current = 0;
 
     document.getElementById('root').innerHTML = `
       <div class="topbar">
@@ -496,47 +528,19 @@
 
     render();
 
-    // ── Card logic ──
-    function render() {
-      const c = deck[current];
-      document.getElementById('front-word').textContent = c.w;
-      const ipaEl = document.getElementById('back-ipa');
-      ipaEl.textContent = c.ipa || '';
-      ipaEl.style.display = c.ipa ? '' : 'none';
-      document.getElementById('back-meaning').textContent = c.m;
-      const pct = ((current + 1) / deck.length * 100).toFixed(1);
-      document.getElementById('prog-text').textContent = `${current + 1} / ${deck.length}`;
-      document.getElementById('prog-bar').style.width = pct + '%';
-    }
-
-    function flip()   { document.getElementById('inner').classList.toggle('flipped'); }
-    function unflip() { document.getElementById('inner').classList.remove('flipped'); }
-    function next()   { current = (current + 1) % deck.length; unflip(); render(); }
-    function prev()   { current = (current - 1 + deck.length) % deck.length; unflip(); render(); }
-    function shuffleDeck() { deck.sort(() => Math.random() - 0.5); current = 0; unflip(); render(); }
-
     document.addEventListener('keydown', e => {
       if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
       if (document.getElementById('modal-overlay').classList.contains('open')) return;
-      if (e.key === 'ArrowRight') next();
-      else if (e.key === 'ArrowLeft') prev();
-      else if (e.key === ' ') { e.preventDefault(); flip(); }
+      if (e.key === 'ArrowRight')              next();
+      else if (e.key === 'ArrowLeft')          prev();
+      else if (e.key === ' ')                  { e.preventDefault(); flip(); }
       else if (e.key === 's' || e.key === 'S') shuffleDeck();
     });
-  }
+  })();
 
-  // ════════════════════════════════
-  // COLOR PICKER MODAL
-  // ════════════════════════════════
-  let selectedPalette = topic ? topic.palette : COLOR_PALETTES[0];
-
-  function applyPalette(p) {
-    document.documentElement.style.setProperty('--c1', p.c1);
-    document.documentElement.style.setProperty('--c2', p.c2);
-    document.documentElement.style.setProperty('--c3', p.c3 || p.c2);
-  }
-
+  // ── Color picker modal ──
   function openModal() {
+    if (!topic) return;
     selectedPalette = topic.palette;
     document.getElementById('modal-subtitle').textContent = topic.name;
     buildGrid();
@@ -575,24 +579,14 @@
     el.textContent = selectedPalette.name;
   }
 
-  function applyColor() {
+  async function applyColor() {
     if (!topic || !selectedPalette) return;
-
-    // Save to localStorage
-    const topics = getTopics();
-    const idx    = topics.findIndex(t => t.id === topic.id);
-    if (idx !== -1) {
-      topics[idx].palette    = selectedPalette;
-      topics[idx].updatedAt  = Date.now();
-      saveTopics(topics);
-      topic = topics[idx];
-    }
-
-    // Update live background + tag
+    topic.palette   = selectedPalette;
+    topic.updatedAt = Date.now();
+    await saveTopic(topic);
     applyPalette(selectedPalette);
     const tag = document.getElementById('palette-tag');
     if (tag) tag.textContent = selectedPalette.name;
-
     closeModal();
   }
 </script>

@@ -124,164 +124,15 @@
     </div>
 
     <script>
-      const jobs = [
-        { w: "Solicitor", ipa: "/səˈlɪsɪtə/", m: "Người cố vấn pháp luật" },
-        { w: "Prison officer", ipa: "/ˈprɪzn ˈɒfɪsə/", m: "Công an trại giam" },
-        {
-          w: "Security officer",
-          ipa: "/sɪˈkjʊərɪti ˈɒfɪsə/",
-          m: "Nhân viên an ninh",
-        },
-        {
-          w: "Customs officer",
-          ipa: "/ˈkʌstəmz ˈɒfɪsə/",
-          m: "Nhân viên hải quan",
-        },
-        { w: "Policewoman", ipa: "/pəˈliːsˌwʊmən/", m: "Cảnh sát nữ" },
-        { w: "Detective", ipa: "/dɪˈtɛktɪv/", m: "Thám tử" },
-        { w: "Lawyer", ipa: "/ˈlɔːjə/", m: "Luật sư" },
-        { w: "Police officer", ipa: "/pəˈliːs ˈɒfɪsə/", m: "Cảnh sát" },
-        { w: "Bodyguard", ipa: "/ˈbɒdiɡɑːd/", m: "Vệ sĩ" },
-        { w: "Judge", ipa: "/dʒʌdʒ/", m: "Quan tòa" },
-        { w: "Forensic scientist", ipa: "/fəˈrɛnsɪk ˈsaɪəntɪst/", m: "Pháp y" },
-        { w: "Barrister", ipa: "/ˈbærɪstə/", m: "Luật sư bào chữa" },
-        { w: "Magistrate", ipa: "/ˈmædʒɪstreɪt/", m: "Quan tòa sơ thẩm" },
-
-        { w: "Web developer", ipa: "/web dɪˈveləpə/", m: "Lập trình web" },
-        {
-          w: "Database administrator",
-          ipa: "/ˈdeɪtəbeɪs ədˈmɪnɪstreɪtə/",
-          m: "Quản trị CSDL",
-        },
-        { w: "Web designer", ipa: "/web dɪˈzaɪnə/", m: "Thiết kế web" },
-        {
-          w: "Software engineer",
-          ipa: "/ˈsɒftweə ˌendʒɪˈnɪə/",
-          m: "Kỹ sư phần mềm",
-        },
-        { w: "Programmer", ipa: "/ˈprəʊɡræmə/", m: "Lập trình viên" },
-        {
-          w: "Software developer",
-          ipa: "/ˈsɒftweə dɪˈveləpə/",
-          m: "Phát triển phần mềm",
-        },
-
-        { w: "Accountant", ipa: "/əˈkaʊntənt/", m: "Kế toán" },
-        { w: "Economist", ipa: "/ɪˈkɒnəmɪst/", m: "Nhà kinh tế" },
-        {
-          w: "Investment analyst",
-          ipa: "/ɪnˈvestmənt ˈænəlɪst/",
-          m: "Phân tích đầu tư",
-        },
-        { w: "Businessman", ipa: "/ˈbɪznɪsmən/", m: "Doanh nhân" },
-        { w: "Businesswoman", ipa: "/ˈbɪznɪswʊmən/", m: "Nữ doanh nhân" },
-        {
-          w: "Financial adviser",
-          ipa: "/faɪˈnænʃəl ədˈvaɪzə/",
-          m: "Cố vấn tài chính",
-        },
-        {
-          w: "Personal assistant",
-          ipa: "/ˈpɜːsnl əˈsɪstənt/",
-          m: "Trợ lý cá nhân",
-        },
-        { w: "Director", ipa: "/dɪˈrektə/", m: "Giám đốc" },
-        {
-          w: "Sales representative",
-          ipa: "/seɪlz ˌreprɪˈzentətɪv/",
-          m: "Đại diện bán hàng",
-        },
-        { w: "Secretary", ipa: "/ˈsekrətri/", m: "Thư ký" },
-        { w: "Manager", ipa: "/ˈmænɪdʒə/", m: "Quản lý" },
-
-        { w: "Receptionist", ipa: "/rɪˈsepʃənɪst/", m: "Lễ tân" },
-        { w: "Office worker", ipa: "/ˈɒfɪs ˈwɜːkə/", m: "Nhân viên văn phòng" },
-        {
-          w: "Customer service representative",
-          ipa: "/ˈkʌstəmə ˈsɜːvɪs/",
-          m: "CSKH",
-        },
-        {
-          w: "Marketing director",
-          ipa: "/ˈmɑːkɪtɪŋ dɪˈrektə/",
-          m: "Giám đốc marketing",
-        },
-
-        { w: "Doctor", ipa: "/ˈdɒktə/", m: "Bác sĩ" },
-        { w: "Nurse", ipa: "/nɜːs/", m: "Y tá" },
-        { w: "Dentist", ipa: "/ˈdentɪst/", m: "Nha sĩ" },
-        { w: "Pharmacist", ipa: "/ˈfɑːməsɪst/", m: "Dược sĩ" },
-        { w: "Surgeon", ipa: "/ˈsɜːdʒən/", m: "Bác sĩ phẫu thuật" },
-        { w: "Psychiatrist", ipa: "/saɪˈkaɪətrɪst/", m: "Bác sĩ tâm thần" },
-        {
-          w: "Physiotherapist",
-          ipa: "/ˌfɪziəˈθerəpɪst/",
-          m: "Vật lý trị liệu",
-        },
-
-        { w: "Teacher", ipa: "/ˈtiːtʃə/", m: "Giáo viên" },
-        { w: "Lecturer", ipa: "/ˈlektʃərə/", m: "Giảng viên" },
-        { w: "Translator", ipa: "/trænsˈleɪtə/", m: "Phiên dịch" },
-        {
-          w: "Teaching assistant",
-          ipa: "/ˈtiːtʃɪŋ əˈsɪstənt/",
-          m: "Trợ giảng",
-        },
-
-        { w: "Engineer", ipa: "/ˌendʒɪˈnɪə/", m: "Kỹ sư" },
-        { w: "Electrician", ipa: "/ɪˌlektrɪʃən/", m: "Thợ điện" },
-        { w: "Mechanic", ipa: "/mɪˈkænɪk/", m: "Thợ sửa máy" },
-        { w: "Plumber", ipa: "/ˈplʌmə/", m: "Thợ sửa ống nước" },
-        { w: "Carpenter", ipa: "/ˈkɑːpɪntə/", m: "Thợ mộc" },
-        { w: "Bricklayer", ipa: "/ˈbrɪkleɪə/", m: "Thợ xây" },
-        { w: "Architect", ipa: "/ˈɑːkɪtekt/", m: "Kiến trúc sư" },
-
-        { w: "Chef", ipa: "/ʃef/", m: "Đầu bếp" },
-        { w: "Cook", ipa: "/kʊk/", m: "Nấu ăn" },
-        { w: "Waiter", ipa: "/ˈweɪtə/", m: "Phục vụ nam" },
-        { w: "Waitress", ipa: "/ˈweɪtrəs/", m: "Phục vụ nữ" },
-        { w: "Bartender", ipa: "/ˈbɑːtendə/", m: "Pha chế rượu" },
-        { w: "Barista", ipa: "/bəˈriːstə/", m: "Pha cà phê" },
-
-        { w: "Actor", ipa: "/ˈæktə/", m: "Diễn viên" },
-        { w: "Actress", ipa: "/ˈæktrəs/", m: "Diễn viên nữ" },
-        { w: "Singer", ipa: "/ˈsɪŋə/", m: "Ca sĩ" },
-        { w: "Musician", ipa: "/mjuˈzɪʃən/", m: "Nhạc sĩ" },
-        { w: "Photographer", ipa: "/fəˈtɒɡrəfə/", m: "Nhiếp ảnh" },
-        { w: "Designer", ipa: "/dɪˈzaɪnə/", m: "Thiết kế" },
-
-        { w: "Pilot", ipa: "/ˈpaɪlət/", m: "Phi công" },
-        { w: "Driver", ipa: "/ˈdraɪvə/", m: "Tài xế" },
-        {
-          w: "Flight attendant",
-          ipa: "/flaɪt əˈtendənt/",
-          m: "Tiếp viên hàng không",
-        },
-
-        { w: "Scientist", ipa: "/ˈsaɪəntɪst/", m: "Nhà khoa học" },
-        { w: "Biologist", ipa: "/baɪˈɒlədʒɪst/", m: "Sinh học" },
-        { w: "Physicist", ipa: "/ˈfɪzɪsɪst/", m: "Vật lý" },
-        { w: "Astronomer", ipa: "/əˈstrɒnəmə/", m: "Thiên văn" },
-        { w: "Researcher", ipa: "/rɪˈsɜːtʃə/", m: "Nhà nghiên cứu" },
-
-        { w: "Cleaner", ipa: "/ˈkliːnə/", m: "Dọn vệ sinh" },
-        { w: "Factory worker", ipa: "/ˈfæktəri ˈwɜːkə/", m: "Công nhân" },
-        { w: "Gardener", ipa: "/ˈɡɑːdnə/", m: "Làm vườn" },
-
-        { w: "Cashier", ipa: "/kæˈʃɪə/", m: "Thu ngân" },
-        { w: "Shop assistant", ipa: "/ʃɒp əˈsɪstənt/", m: "Bán hàng" },
-        { w: "Store manager", ipa: "/stɔː ˈmænɪdʒə/", m: "Quản lý cửa hàng" },
-
-        { w: "Politician", ipa: "/ˌpɒlɪˈtɪʃən/", m: "Chính trị gia" },
-        { w: "Housewife", ipa: "/ˈhaʊswaɪf/", m: "Nội trợ" },
-
-        { w: "Burglar", ipa: "/ˈbɜːɡlə/", m: "Kẻ trộm" },
-        { w: "Thief", ipa: "/θiːf/", m: "Kẻ cắp" },
-        { w: "Smuggler", ipa: "/ˈsmʌɡlə/", m: "Buôn lậu" },
-        { w: "Pickpocket", ipa: "/ˈpɪkpɒkɪt/", m: "Móc túi" },
-      ];
-
+      let jobs = [];
       let current = 0;
+
+      fetch("data/jobs.json")
+        .then(r => r.json())
+        .then(data => {
+          jobs = data;
+          render();
+        });
 
       function render() {
         document.getElementById("front").innerText = jobs[current].w;
@@ -315,8 +166,6 @@
         document.getElementById("card").classList.remove("flipped");
         render();
       }
-
-      render();
     </script>
   </body>
 </html>

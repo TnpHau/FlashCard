@@ -1,0 +1,399 @@
+{
+  "id": "20260502_hoat-dong-hang-ngay",
+  "name": "Hoạt động hằng ngày",
+  "palette": {
+    "name": "Hoàng Hôn",
+    "c1": "#FF416C",
+    "c2": "#ff8c42",
+    "c3": "#ffd166"
+  },
+  "cards": [
+    {
+      "w": "Bend",
+      "ipa": "/bend/",
+      "m": "uốn cong, cúi người"
+    },
+    {
+      "w": "Carry",
+      "ipa": "/ˈkæri/",
+      "m": "cầm, mang, vác"
+    },
+    {
+      "w": "Catch",
+      "ipa": "/kætʃ/",
+      "m": "bắt lấy"
+    },
+    {
+      "w": "Climb",
+      "ipa": "/klaɪm/",
+      "m": "leo trèo"
+    },
+    {
+      "w": "Crouch",
+      "ipa": "/kraʊtʃ/",
+      "m": "khúm núm"
+    },
+    {
+      "w": "Dance",
+      "ipa": "/dæns/",
+      "m": "nhảy múa"
+    },
+    {
+      "w": "Dive",
+      "ipa": "/daɪv/",
+      "m": "lặn"
+    },
+    {
+      "w": "Drag",
+      "ipa": "/dræɡ/",
+      "m": "kéo lê"
+    },
+    {
+      "w": "Drink",
+      "ipa": "/drɪŋk/",
+      "m": "uống"
+    },
+    {
+      "w": "Eat",
+      "ipa": "/iːt/",
+      "m": "ăn"
+    },
+    {
+      "w": "Grab",
+      "ipa": "/ɡræb/",
+      "m": "túm lấy"
+    },
+    {
+      "w": "Hit",
+      "ipa": "/hɪt/",
+      "m": "đánh"
+    },
+    {
+      "w": "Hop",
+      "ipa": "/hɒp/",
+      "m": "nhảy lò cò"
+    },
+    {
+      "w": "Hug",
+      "ipa": "/hʌɡ/",
+      "m": "ôm"
+    },
+    {
+      "w": "Jog",
+      "ipa": "/dʒɒɡ/",
+      "m": "chạy bộ"
+    },
+    {
+      "w": "Jump",
+      "ipa": "/dʒʌmp/",
+      "m": "nhảy"
+    },
+    {
+      "w": "Kick",
+      "ipa": "/kɪk/",
+      "m": "đá"
+    },
+    {
+      "w": "Lie",
+      "ipa": "/laɪ/",
+      "m": "nằm"
+    },
+    {
+      "w": "Lift",
+      "ipa": "/lɪft/",
+      "m": "nâng lên"
+    },
+    {
+      "w": "Play",
+      "ipa": "/pleɪ/",
+      "m": "chơi"
+    },
+    {
+      "w": "Pull",
+      "ipa": "/pʊl/",
+      "m": "kéo"
+    },
+    {
+      "w": "Push",
+      "ipa": "/pʊʃ/",
+      "m": "đẩy"
+    },
+    {
+      "w": "Shake",
+      "ipa": "/ʃeɪk/",
+      "m": "lắc"
+    },
+    {
+      "w": "Sleep",
+      "ipa": "/sliːp/",
+      "m": "ngủ"
+    },
+    {
+      "w": "Spin",
+      "ipa": "/spɪn/",
+      "m": "quay"
+    },
+    {
+      "w": "Squat",
+      "ipa": "/skwɒt/",
+      "m": "ngồi xổm"
+    },
+    {
+      "w": "Stand",
+      "ipa": "/stænd/",
+      "m": "đứng"
+    },
+    {
+      "w": "Swim",
+      "ipa": "/swɪm/",
+      "m": "bơi"
+    },
+    {
+      "w": "Walk",
+      "ipa": "/wɔːk/",
+      "m": "đi bộ"
+    },
+    {
+      "w": "Bend forward",
+      "ipa": "/bend ˈfɔːwəd/",
+      "m": "cúi về phía trước"
+    },
+    {
+      "w": "Lie on your back",
+      "ipa": "/laɪ ɒn jɔː bæk/",
+      "m": "nằm ngửa"
+    },
+    {
+      "w": "Lie on your stomach",
+      "ipa": "/laɪ ɒn jɔː ˈstʌmək/",
+      "m": "nằm sấp"
+    },
+    {
+      "w": "Lie on your side",
+      "ipa": "/laɪ ɒn jɔː saɪd/",
+      "m": "nằm nghiêng"
+    },
+    {
+      "w": "Read",
+      "ipa": "/riːd/",
+      "m": "đọc"
+    },
+    {
+      "w": "Nod your head",
+      "ipa": "/nɒd jɔː hed/",
+      "m": "gật đầu"
+    },
+    {
+      "w": "Shake your head",
+      "ipa": "/ʃeɪk jɔː hed/",
+      "m": "lắc đầu"
+    },
+    {
+      "w": "Turn your head",
+      "ipa": "/tɜːn jɔː hed/",
+      "m": "quay đầu"
+    },
+    {
+      "w": "Roll your eyes",
+      "ipa": "/rəʊl jɔː aɪz/",
+      "m": "đảo mắt"
+    },
+    {
+      "w": "Blink",
+      "ipa": "/blɪŋk/",
+      "m": "chớp mắt"
+    },
+    {
+      "w": "Wink",
+      "ipa": "/wɪŋk/",
+      "m": "nháy mắt"
+    },
+    {
+      "w": "See",
+      "ipa": "/siː/",
+      "m": "nhìn thấy"
+    },
+    {
+      "w": "Raise your eyebrows",
+      "ipa": "/reɪz jɔː ˈaɪbraʊz/",
+      "m": "nhướn lông mày"
+    },
+    {
+      "w": "Blow your nose",
+      "ipa": "/bləʊ jɔː nəʊz/",
+      "m": "hỉ mũi"
+    },
+    {
+      "w": "Sneeze",
+      "ipa": "/sniːz/",
+      "m": "hắt hơi"
+    },
+    {
+      "w": "Stick your tongue out",
+      "ipa": "/stɪk jɔː tʌŋ aʊt/",
+      "m": "lè lưỡi"
+    },
+    {
+      "w": "Lick",
+      "ipa": "/lɪk/",
+      "m": "liếm"
+    },
+    {
+      "w": "Clear your throat",
+      "ipa": "/klɪə jɔː θrəʊt/",
+      "m": "hắng giọng"
+    },
+    {
+      "w": "Shout",
+      "ipa": "/ʃaʊt/",
+      "m": "la hét"
+    },
+    {
+      "w": "Sing",
+      "ipa": "/sɪŋ/",
+      "m": "hát"
+    },
+    {
+      "w": "Talk",
+      "ipa": "/tɔːk/",
+      "m": "nói chuyện"
+    },
+    {
+      "w": "Cry",
+      "ipa": "/kraɪ/",
+      "m": "khóc"
+    },
+    {
+      "w": "Smile",
+      "ipa": "/smaɪl/",
+      "m": "cười"
+    },
+    {
+      "w": "Comb",
+      "ipa": "/kəʊm/",
+      "m": "chải tóc"
+    },
+    {
+      "w": "Crawl",
+      "ipa": "/krɔːl/",
+      "m": "bò"
+    },
+    {
+      "w": "Flip",
+      "ipa": "/flɪp/",
+      "m": "búng tay"
+    },
+    {
+      "w": "Hold",
+      "ipa": "/həʊld/",
+      "m": "cầm"
+    },
+    {
+      "w": "Shrug your shoulders",
+      "ipa": "/ʃrʌɡ jɔː ˈʃəʊldəz/",
+      "m": "nhún vai"
+    },
+    {
+      "w": "Cross your legs",
+      "ipa": "/krɒs jɔː leɡz/",
+      "m": "khoanh chân"
+    },
+    {
+      "w": "Cross your arms",
+      "ipa": "/krɒs jɔː ɑːmz/",
+      "m": "khoanh tay"
+    },
+    {
+      "w": "Punch",
+      "ipa": "/pʌntʃ/",
+      "m": "đấm"
+    },
+    {
+      "w": "Wave",
+      "ipa": "/weɪv/",
+      "m": "vẫy tay"
+    },
+    {
+      "w": "Brush your teeth",
+      "ipa": "/brʌʃ jɔː tiːθ/",
+      "m": "đánh răng"
+    },
+    {
+      "w": "Clap your hands",
+      "ipa": "/klæp jɔː hændz/",
+      "m": "vỗ tay"
+    },
+    {
+      "w": "Keep your fingers crossed",
+      "ipa": "/kiːp jɔː ˈfɪŋɡəz krɒst/",
+      "m": "cầu may"
+    },
+    {
+      "w": "Rake",
+      "ipa": "/reɪk/",
+      "m": "cào"
+    },
+    {
+      "w": "Slap",
+      "ipa": "/slæp/",
+      "m": "tát"
+    },
+    {
+      "w": "Stroke",
+      "ipa": "/strəʊk/",
+      "m": "vuốt ve"
+    },
+    {
+      "w": "Give the thumbs up",
+      "ipa": "/ɡɪv ðə θʌmz ʌp/",
+      "m": "giơ ngón cái lên"
+    },
+    {
+      "w": "Give the thumbs down",
+      "ipa": "/ɡɪv ðə θʌmz daʊn/",
+      "m": "chê"
+    },
+    {
+      "w": "Pick up",
+      "ipa": "/pɪk ʌp/",
+      "m": "nhặt lên"
+    },
+    {
+      "w": "Plant",
+      "ipa": "/plɑːnt/",
+      "m": "trồng"
+    },
+    {
+      "w": "Scrub",
+      "ipa": "/skrʌb/",
+      "m": "cọ rửa"
+    },
+    {
+      "w": "Sweep",
+      "ipa": "/swiːp/",
+      "m": "quét"
+    },
+    {
+      "w": "Slice",
+      "ipa": "/slaɪs/",
+      "m": "cắt lát"
+    },
+    {
+      "w": "Sew",
+      "ipa": "/səʊ/",
+      "m": "may"
+    },
+    {
+      "w": "Sit",
+      "ipa": "/sɪt/",
+      "m": "ngồi"
+    },
+    {
+      "w": "Stomp your feet",
+      "ipa": "/stɒmp jɔː fiːt/",
+      "m": "dậm chân"
+    }
+  ],
+  "createdAt": 1777741064404,
+  "updatedAt": 1777741064404
+}

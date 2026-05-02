@@ -471,8 +471,8 @@
     <div class="toast" id="toast"></div>
 
     <script>
-      let topics = seedIfEmpty();
-      renderGrid(topics);
+      let topics = [];
+      getTopics().then(t => { topics = t; renderGrid(topics); });
 
       // ── Render grid ──
       function renderGrid(list) {
@@ -572,18 +572,16 @@
         el.textContent = selectedPalette.name;
       }
 
-      function applyColor() {
+      async function applyColor() {
         if (!modalTopicId || !selectedPalette) return;
 
-        topics = getTopics();
         const idx = topics.findIndex((t) => t.id === modalTopicId);
         if (idx === -1) return;
 
-        topics[idx].palette = selectedPalette;
-        topics[idx].updatedAt = Date.now();
-        saveTopics(topics);
+        topics[idx].palette    = selectedPalette;
+        topics[idx].updatedAt  = Date.now();
+        await saveTopic(topics[idx]);
 
-        // Update card in place (no full re-render needed)
         const card = document.getElementById(`card-${modalTopicId}`);
         if (card) {
           card.style.background = getGradient(selectedPalette);
@@ -592,9 +590,7 @@
         }
 
         closeModal();
-        showToast(
-          `🎨 Đã đổi màu "${topics[idx].name}" → ${selectedPalette.name}`,
-        );
+        showToast(`🎨 Đã đổi màu "${topics[idx].name}" → ${selectedPalette.name}`);
       }
 
       // ── Toast ──

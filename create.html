@@ -346,7 +346,7 @@ Nurse   | Y tá</code>
 
   <!-- Save -->
   <div class="form-footer">
-    <button class="btn-save" id="save-btn" onclick="saveTopic()">
+    <button class="btn-save" id="save-btn" onclick="handleSave()">
       💾 Lưu chủ đề
     </button>
   </div>
@@ -354,40 +354,40 @@ Nurse   | Y tá</code>
   <!-- Danger zone (edit mode only) -->
   <div class="danger-zone" id="danger-zone" style="display:none">
     <h3>Vùng nguy hiểm</h3>
-    <button class="btn-delete" onclick="deleteTopic()">🗑️ Xóa chủ đề này</button>
+    <button class="btn-delete" onclick="handleDelete()">🗑️ Xóa chủ đề này</button>
   </div>
 
 </div>
 
 <script>
-  // ── State ──
   let currentPalette = randomPalette();
   let editId = null;
 
-  // ── Init ──
-  const params = new URLSearchParams(window.location.search);
+  const params  = new URLSearchParams(window.location.search);
   const paramId = params.get('id');
 
-  if (paramId) {
-    const topic = getTopicById(paramId);
-    if (topic) {
-      editId = paramId;
-      currentPalette = topic.palette;
+  async function init() {
+    if (paramId) {
+      const topic = await getTopicById(paramId);
+      if (topic) {
+        editId = paramId;
+        currentPalette = topic.palette;
 
-      document.getElementById('page-title').textContent = 'Chỉnh Sửa Chủ Đề';
-      document.getElementById('mode-badge').textContent = 'CHỈNH SỬA';
-      document.getElementById('mode-badge').className = 'mode-badge badge-edit';
-      document.getElementById('topic-name').value = topic.name;
-      document.getElementById('word-list').value = topic.cards
-        .map(c => [c.w, c.ipa, c.m].filter(Boolean).join(' | '))
-        .join('\n');
-      document.getElementById('danger-zone').style.display = 'block';
-      document.getElementById('save-btn').textContent = '💾 Cập nhật';
-      updateCount();
+        document.getElementById('page-title').textContent = 'Chỉnh Sửa Chủ Đề';
+        document.getElementById('mode-badge').textContent = 'CHỈNH SỬA';
+        document.getElementById('mode-badge').className   = 'mode-badge badge-edit';
+        document.getElementById('topic-name').value       = topic.name;
+        document.getElementById('word-list').value        = topic.cards
+          .map(c => [c.w, c.ipa, c.m].filter(Boolean).join(' | '))
+          .join('\n');
+        document.getElementById('danger-zone').style.display = 'block';
+        document.getElementById('save-btn').textContent  = '💾 Cập nhật';
+        updateCount();
+      }
     }
+    buildPaletteGrid();
   }
-
-  buildPaletteGrid();
+  init();
 
   // ── Palette grid ──
   function buildPaletteGrid() {
@@ -410,18 +410,15 @@ Nurse   | Y tá</code>
   function updatePaletteInfo() {
     const c3 = currentPalette.c3 || currentPalette.c2;
     document.getElementById('pal-preview').style.background = getGradient(currentPalette);
-    document.getElementById('pal-name').textContent = currentPalette.name;
-    document.getElementById('pal-hex').textContent =
-      `${currentPalette.c1} · ${currentPalette.c2} · ${c3}`;
+    document.getElementById('pal-name').textContent  = currentPalette.name;
+    document.getElementById('pal-hex').textContent   = `${currentPalette.c1} · ${currentPalette.c2} · ${c3}`;
   }
 
-  // ── Count ──
   function updateCount() {
     const n = parseWordList(document.getElementById('word-list').value).length;
     document.getElementById('count-badge').textContent = `${n} thẻ`;
   }
 
-  // ── Help ──
   function toggleHelp(btn) {
     const box = document.getElementById('help-box');
     box.classList.toggle('open');
@@ -429,7 +426,7 @@ Nurse   | Y tá</code>
   }
 
   // ── Save ──
-  function saveTopic() {
+  async function handleSave() {
     const nameEl  = document.getElementById('topic-name');
     const listEl  = document.getElementById('word-list');
     const nameErr = document.getElementById('name-error');
@@ -443,31 +440,28 @@ Nurse   | Y tá</code>
     const cards = parseWordList(listEl.value);
     if (!cards.length) { listErr.classList.add('show'); listEl.focus(); return; }
 
-    const topics = getTopics();
     const now = Date.now();
+    let topic;
 
     if (editId) {
-      const idx = topics.findIndex(t => t.id === editId);
-      if (idx !== -1) {
-        topics[idx] = { ...topics[idx], name, palette: currentPalette, cards, updatedAt: now };
-      }
+      const existing = await getTopicById(editId) || {};
+      topic = { ...existing, name, palette: currentPalette, cards, updatedAt: now };
       sessionStorage.setItem('fc_msg', `✅ Đã cập nhật "${name}" — ${cards.length} thẻ`);
     } else {
-      topics.push({ id: generateId(), name, palette: currentPalette, cards, createdAt: now, updatedAt: now });
+      topic = { id: generateId(name), name, palette: currentPalette, cards, createdAt: now, updatedAt: now };
       sessionStorage.setItem('fc_msg', `✅ Đã tạo "${name}" — ${cards.length} thẻ`);
     }
 
-    saveTopics(topics);
+    await saveTopic(topic);
     window.location.href = 'index.html';
   }
 
   // ── Delete ──
-  function deleteTopic() {
+  async function handleDelete() {
     if (!editId) return;
-    const topic = getTopicById(editId);
+    const topic = await getTopicById(editId);
     if (!confirm(`Xóa chủ đề "${topic?.name}"?\nHành động này không thể hoàn tác.`)) return;
-    const topics = getTopics().filter(t => t.id !== editId);
-    saveTopics(topics);
+    await deleteTopicById(editId);
     sessionStorage.setItem('fc_msg', `🗑️ Đã xóa "${topic?.name}"`);
     window.location.href = 'index.html';
   }
