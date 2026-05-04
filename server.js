@@ -148,4 +148,12 @@ app.delete('/api/topics/:id', requireAuth, (req, res) => {
   }
 });
 
+app.use((err, req, res, next) => {
+  console.error('express error:', err);
+  res.status(500).json({ error: err.message });
+});
+
+process.on('uncaughtException',  err => console.error('uncaughtException:', err));
+process.on('unhandledRejection', err => console.error('unhandledRejection:', err));
+
 app.listen(PORT, () => console.log(`FlashCard Pro → http://localhost:${PORT}`));
