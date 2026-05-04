@@ -1,14 +1,12 @@
 {
-  "id": "20260503_cong-viec-nghe-nghiep",
-  "name": "Công việc & Nghề nghiệp",
+  "id": "20260504_cong-viec-nghe-nghiep",
+  "name": "Công việc nghề nghiệp",
   "palette": {
-    "name": "Đại Dương",
-    "c1": "#1a6fe8",
-    "c2": "#1289A7",
-    "c3": "#12CBC4"
+    "name": "Thiên Hà",
+    "c1": "#2c3e50",
+    "c2": "#4568DC",
+    "c3": "#B06AB3"
   },
-  "createdAt": 1684000000000,
-  "updatedAt": 1777741046510,
   "cards": [
     {
       "w": "Solicitor",
@@ -430,5 +428,7 @@
       "ipa": "/ˈpɪkpɒkɪt/",
       "m": "Móc túi"
     }
-  ]
+  ],
+  "createdAt": 1777877881840,
+  "updatedAt": 1777877881840
 }

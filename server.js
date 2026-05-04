@@ -50,42 +50,52 @@ function requireAuth(req, res, next) {
 
 // ── Auth routes ──
 app.post('/api/auth/register', async (req, res) => {
-  const { username, password } = req.body || {};
-  if (!username || !password)
-    return res.status(400).json({ error: 'Thiếu thông tin' });
-  if (username.trim().length < 3)
-    return res.status(400).json({ error: 'Tên đăng nhập tối thiểu 3 ký tự' });
-  if (password.length < 6)
-    return res.status(400).json({ error: 'Mật khẩu tối thiểu 6 ký tự' });
+  try {
+    const { username, password } = req.body || {};
+    if (!username || !password)
+      return res.status(400).json({ error: 'Thiếu thông tin' });
+    if (username.trim().length < 3)
+      return res.status(400).json({ error: 'Tên đăng nhập tối thiểu 3 ký tự' });
+    if (password.length < 6)
+      return res.status(400).json({ error: 'Mật khẩu tối thiểu 6 ký tự' });
 
-  const users = loadUsers();
-  if (users.find(u => u.username.toLowerCase() === username.toLowerCase()))
-    return res.status(400).json({ error: 'Tên đăng nhập đã tồn tại' });
+    const users = loadUsers();
+    if (users.find(u => u.username.toLowerCase() === username.toLowerCase()))
+      return res.status(400).json({ error: 'Tên đăng nhập đã tồn tại' });
 
-  const id           = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-  const passwordHash = await bcrypt.hash(password, 10);
-  users.push({ id, username: username.trim(), passwordHash });
-  saveUsers(users);
-  ensureUserDir(id);
+    const id           = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    const passwordHash = await bcrypt.hash(password, 10);
+    users.push({ id, username: username.trim(), passwordHash });
+    saveUsers(users);
+    ensureUserDir(id);
 
-  const token = jwt.sign({ userId: id }, SECRET, { expiresIn: '7d' });
-  res.json({ token, username: username.trim() });
+    const token = jwt.sign({ userId: id }, SECRET, { expiresIn: '7d' });
+    res.json({ token, username: username.trim() });
+  } catch (e) {
+    console.error('register error:', e);
+    res.status(500).json({ error: 'Lỗi server: ' + e.message });
+  }
 });
 
 app.post('/api/auth/login', async (req, res) => {
-  const { username, password } = req.body || {};
-  if (!username || !password)
-    return res.status(400).json({ error: 'Thiếu thông tin' });
+  try {
+    const { username, password } = req.body || {};
+    if (!username || !password)
+      return res.status(400).json({ error: 'Thiếu thông tin' });
 
-  const users = loadUsers();
-  const user  = users.find(u => u.username.toLowerCase() === username.toLowerCase());
-  if (!user) return res.status(401).json({ error: 'Sai tên đăng nhập hoặc mật khẩu' });
+    const users = loadUsers();
+    const user  = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+    if (!user) return res.status(401).json({ error: 'Sai tên đăng nhập hoặc mật khẩu' });
 
-  const ok = await bcrypt.compare(password, user.passwordHash);
-  if (!ok)  return res.status(401).json({ error: 'Sai tên đăng nhập hoặc mật khẩu' });
+    const ok = await bcrypt.compare(password, user.passwordHash);
+    if (!ok)  return res.status(401).json({ error: 'Sai tên đăng nhập hoặc mật khẩu' });
 
-  const token = jwt.sign({ userId: user.id }, SECRET, { expiresIn: '7d' });
-  res.json({ token, username: user.username });
+    const token = jwt.sign({ userId: user.id }, SECRET, { expiresIn: '7d' });
+    res.json({ token, username: user.username });
+  } catch (e) {
+    console.error('login error:', e);
+    res.status(500).json({ error: 'Lỗi server: ' + e.message });
+  }
 });
 
 // ── Topic routes (all require auth) ──
