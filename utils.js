@@ -21,28 +21,61 @@ const COLOR_PALETTES = [
   { name: "Cực Quang",   c1: "#00C9FF", c2: "#92FE9D", c3: "#1de9b6" },
 ];
 
+// ===== Auth helpers =====
+
+function getToken()    { return localStorage.getItem('fc_token'); }
+function getUsername() { return localStorage.getItem('fc_user'); }
+
+function logout() {
+  localStorage.removeItem('fc_token');
+  localStorage.removeItem('fc_user');
+  window.location.replace('login.html');
+}
+
+function checkAuth() {
+  if (!getToken()) window.location.replace('login.html');
+}
+
 // ===== API helpers =====
 
+function _authHeaders(json) {
+  const h = { 'Authorization': 'Bearer ' + getToken() };
+  if (json) h['Content-Type'] = 'application/json';
+  return h;
+}
+
+async function _handleUnauth(res) {
+  if (res.status === 401) { logout(); return true; }
+  return false;
+}
+
 async function getTopics() {
-  const res = await fetch('/api/topics');
+  const res = await fetch('/api/topics', { headers: _authHeaders() });
+  if (await _handleUnauth(res)) return [];
   return res.ok ? res.json() : [];
 }
 
 async function getTopicById(id) {
-  const res = await fetch('/api/topics/' + id);
+  const res = await fetch('/api/topics/' + id, { headers: _authHeaders() });
+  if (await _handleUnauth(res)) return null;
   return res.ok ? res.json() : null;
 }
 
 async function saveTopic(topic) {
-  await fetch('/api/topics/' + topic.id, {
+  const res = await fetch('/api/topics/' + topic.id, {
     method:  'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: _authHeaders(true),
     body:    JSON.stringify(topic),
   });
+  await _handleUnauth(res);
 }
 
 async function deleteTopicById(id) {
-  await fetch('/api/topics/' + id, { method: 'DELETE' });
+  const res = await fetch('/api/topics/' + id, {
+    method:  'DELETE',
+    headers: _authHeaders(),
+  });
+  await _handleUnauth(res);
 }
 
 // ===== Misc helpers =====

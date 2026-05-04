@@ -60,6 +60,7 @@
         align-items: center;
         max-width: 1120px;
         margin: 0 auto 28px;
+        gap: 12px;
       }
       .section-label {
         font-size: 13px;
@@ -68,6 +69,30 @@
         text-transform: uppercase;
         letter-spacing: 2px;
       }
+      .auth-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-left: auto;
+      }
+      .username-tag {
+        font-size: 13px;
+        color: #64748b;
+        font-weight: 500;
+      }
+      .btn-logout {
+        padding: 8px 14px;
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 10px;
+        color: #94a3b8;
+        font-family: 'Poppins', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+      }
+      .btn-logout:hover { background: #334155; color: #e2e8f0; }
       .btn-new {
         display: inline-flex;
         align-items: center;
@@ -442,7 +467,11 @@
 
     <div class="action-bar">
       <span class="section-label" id="count-label">Đang tải…</span>
-      <a href="create.html" class="btn-new">+ Tạo chủ đề mới</a>
+      <div class="auth-group">
+        <span class="username-tag" id="username-tag"></span>
+        <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+        <a href="create.html" class="btn-new">+ Tạo chủ đề mới</a>
+      </div>
     </div>
 
     <div class="grid" id="grid"></div>
@@ -471,6 +500,9 @@
     <div class="toast" id="toast"></div>
 
     <script>
+      checkAuth();
+      document.getElementById('username-tag').textContent = '👤 ' + (getUsername() || '');
+
       let topics = [];
       getTopics().then(t => { topics = t; renderGrid(topics); });
 
