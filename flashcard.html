@@ -259,6 +259,80 @@
     .not-found h2 { font-size: 22px; }
     .not-found a { color: white; opacity: 0.8; }
 
+    /* ── Mode toggle button ── */
+    .btn-mode {
+      display: flex; align-items: center;
+      gap: 5px;
+      padding: 0 12px;
+      height: 36px;
+      background: rgba(255,255,255,0.14);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-mode:hover  { background: rgba(255,255,255,0.28); }
+    .btn-mode.active { background: rgba(255,255,255,0.32); box-shadow: 0 0 0 2px rgba(255,255,255,0.4); }
+
+    /* ── Answer section (reverse mode) ── */
+    .answer-section {
+      width: min(440px, 90vw);
+      margin-top: 18px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .answer-section.visible { display: flex; }
+    .answer-row { display: flex; gap: 8px; }
+    .answer-input {
+      flex: 1;
+      padding: 11px 16px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.12);
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      outline: none;
+      backdrop-filter: blur(8px);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .answer-input::placeholder { color: rgba(255,255,255,0.4); }
+    .answer-input:focus {
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.18);
+    }
+    .btn-check {
+      padding: 11px 18px;
+      border-radius: 12px;
+      border: none;
+      background: rgba(255,255,255,0.25);
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-check:hover { background: rgba(255,255,255,0.38); }
+    .feedback {
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+      padding: 10px 16px;
+      border-radius: 12px;
+      display: none;
+    }
+    .feedback.visible { display: block; }
+    .feedback.correct { background: rgba(34,197,94,0.25); border: 1px solid rgba(34,197,94,0.4); }
+    .feedback.wrong   { background: rgba(239,68,68,0.25);  border: 1px solid rgba(239,68,68,0.4);  }
+
     /* ════════════════════════════════
        COLOR PICKER MODAL
     ════════════════════════════════ */
@@ -440,25 +514,69 @@
   }
 
   // deck & current ở global để flip/next/prev/shuffleDeck dùng được từ onclick
-  let deck    = [];
-  let current = 0;
+  let deck        = [];
+  let current     = 0;
+  let reverseMode = false;
 
   function render() {
     const c = deck[current];
-    document.getElementById('front-word').textContent = c.w;
     const ipaEl = document.getElementById('back-ipa');
     ipaEl.textContent   = c.ipa || '';
     ipaEl.style.display = c.ipa ? '' : 'none';
-    document.getElementById('back-meaning').textContent = c.m;
-    document.getElementById('prog-text').textContent    = `${current + 1} / ${deck.length}`;
-    document.getElementById('prog-bar').style.width     = ((current + 1) / deck.length * 100).toFixed(1) + '%';
+    if (reverseMode) {
+      document.getElementById('front-word').textContent  = c.m;
+      document.getElementById('front-hint').textContent  = 'Gõ đáp án tiếng Anh ↩';
+      document.getElementById('back-meaning').textContent = c.w;
+    } else {
+      document.getElementById('front-word').textContent  = c.w;
+      document.getElementById('front-hint').textContent  = 'Nhấn để xem nghĩa ↩';
+      document.getElementById('back-meaning').textContent = c.m;
+    }
+    document.getElementById('prog-text').textContent = `${current + 1} / ${deck.length}`;
+    document.getElementById('prog-bar').style.width  = ((current + 1) / deck.length * 100).toFixed(1) + '%';
   }
 
   function flip()        { document.getElementById('inner').classList.toggle('flipped'); }
   function unflip()      { document.getElementById('inner').classList.remove('flipped'); }
-  function next()        { current = (current + 1) % deck.length; unflip(); render(); }
-  function prev()        { current = (current - 1 + deck.length) % deck.length; unflip(); render(); }
-  function shuffleDeck() { deck.sort(() => Math.random() - 0.5); current = 0; unflip(); render(); }
+  function next()        { current = (current + 1) % deck.length; unflip(); clearAnswer(); render(); }
+  function prev()        { current = (current - 1 + deck.length) % deck.length; unflip(); clearAnswer(); render(); }
+  function shuffleDeck() { deck.sort(() => Math.random() - 0.5); current = 0; unflip(); clearAnswer(); render(); }
+
+  function toggleMode() {
+    reverseMode = !reverseMode;
+    const btn = document.getElementById('btn-mode');
+    if (btn) {
+      btn.textContent = reverseMode ? '📖 Thường' : '🔁 Đảo chiều';
+      btn.classList.toggle('active', reverseMode);
+    }
+    const ans = document.getElementById('answer-section');
+    if (ans) ans.classList.toggle('visible', reverseMode);
+    unflip(); clearAnswer(); render();
+  }
+
+  function checkAnswer() {
+    const input    = document.getElementById('answer-input');
+    const feedback = document.getElementById('feedback');
+    if (!input || !feedback) return;
+    const c       = deck[current];
+    const userAns = input.value.trim().toLowerCase();
+    const correct = c.w.toLowerCase();
+    flip();
+    if (userAns === correct) {
+      feedback.className   = 'feedback visible correct';
+      feedback.textContent = '✅ Đúng rồi!';
+    } else {
+      feedback.className   = 'feedback visible wrong';
+      feedback.textContent = `❌ Sai! Đáp án: ${c.w}`;
+    }
+  }
+
+  function clearAnswer() {
+    const input    = document.getElementById('answer-input');
+    const feedback = document.getElementById('feedback');
+    if (input)    input.value = '';
+    if (feedback) { feedback.className = 'feedback'; feedback.textContent = ''; }
+  }
 
   (async () => {
     topic = topicId ? await getTopicById(topicId) : null;
@@ -488,6 +606,7 @@
           <span class="topic-label">${escHtml(topic.name)}</span>
         </div>
         <div class="topbar-right">
+          <button class="btn-mode" id="btn-mode" onclick="toggleMode()">🔁 Đảo chiều</button>
           <span class="palette-tag" id="palette-tag" onclick="openModal()">${escHtml(topic.palette.name)}</span>
           <button class="btn-color" onclick="openModal()" title="Đổi màu nền">🎨</button>
         </div>
@@ -503,13 +622,21 @@
           <div class="card-inner" id="inner">
             <div class="face face-front">
               <div class="word" id="front-word"></div>
-              <div class="hint">Nhấn để xem nghĩa ↩</div>
+              <div class="hint" id="front-hint">Nhấn để xem nghĩa ↩</div>
             </div>
             <div class="face face-back">
               <div class="ipa" id="back-ipa"></div>
               <div class="meaning" id="back-meaning"></div>
             </div>
           </div>
+        </div>
+
+        <div class="answer-section" id="answer-section">
+          <div class="answer-row">
+            <input class="answer-input" id="answer-input" type="text" placeholder="Gõ từ tiếng Anh..." onkeydown="if(event.key==='Enter') checkAnswer()"/>
+            <button class="btn-check" onclick="checkAnswer()">Kiểm tra</button>
+          </div>
+          <div class="feedback" id="feedback"></div>
         </div>
 
         <div class="controls">
@@ -523,6 +650,7 @@
           <span><kbd>←</kbd><kbd>→</kbd> Điều hướng</span>
           <span><kbd>Space</kbd> Lật thẻ</span>
           <span><kbd>S</kbd> Trộn bài</span>
+          <span><kbd>R</kbd> Đảo chiều</span>
         </div>
       </div>`;
 
@@ -535,6 +663,7 @@
       else if (e.key === 'ArrowLeft')          prev();
       else if (e.key === ' ')                  { e.preventDefault(); flip(); }
       else if (e.key === 's' || e.key === 'S') shuffleDeck();
+      else if (e.key === 'r' || e.key === 'R') toggleMode();
     });
   })();
 
